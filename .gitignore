@@ -1,0 +1,37 @@
+# Ambiente virtual
+venv/
+.venv/
+.env
+.env.local
+
+# Arquivos de dependências e cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Configuração do editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs e temporários
+logs/
+*.log
+debug.log
+instance/
+
+# Banco de dados local
+*.sqlite3
+*.db
+
+# Arquivos específicos do Flask
+instance/
