@@ -2,6 +2,8 @@ import os
 import zipfile
 import time
 import requests
+import pdfplumber
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -55,3 +57,29 @@ def compactar_arquivos(arquivos):
         for arquivo in arquivos:
             zipf.write(arquivo, os.path.basename(arquivo))
     return zip_path
+
+ABBREVIATIONS = {
+    "AMB": "Seg. Ambulatorial",
+    "OD": "Seg. Odontológica",
+}
+
+def extrair_pdf(pdf_path):
+    output_dir = "csv"
+    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(ZIP_DIR, exist_ok=True)
+    csv_path = os.path.join(output_dir, "dados_extraidos.csv")
+    zip_path = os.path.join(ZIP_DIR, "Teste_Mateus_Maia_Gutierrez.zip")
+    with pdfplumber.open(pdf_path) as pdf:
+        tables = []
+        for page in pdf.pages:
+            table = page.extract_table()
+            if table:
+                tables.extend(table)
+        df = pd.DataFrame(tables[1:], columns=tables[0])
+        df.replace(ABBREVIATIONS, inplace=True)
+        df.to_csv(csv_path, index=False, encoding='utf-8')
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            zipf.write(csv_path, os.path.basename(csv_path))
+    return zip_path
+
+
